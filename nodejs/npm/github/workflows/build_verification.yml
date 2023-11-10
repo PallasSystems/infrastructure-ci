@@ -2,11 +2,9 @@ name: Build Verification of Node.JS project
 
 on:
   workflow_call:
-    inputs:
+    secrets:
       SCM_USER:
         required: true
-        type: string
-    secrets:
       SCM_TOKEN:
         required: true
       SONAR_TOKEN:
