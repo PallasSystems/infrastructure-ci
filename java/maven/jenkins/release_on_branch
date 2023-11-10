@@ -1,0 +1,98 @@
+#!/bin/groovy
+
+pipeline {
+    agent {
+        label "(DOCKER||docker)"
+    }
+    environment {
+        // Credential Identifiers
+        bitbucketUser   =   "bitbucket-user"
+        
+        // Sonar Specific Configuration
+        sonarEnv    =   "sonarqube"
+        sonarTool   =   "SonarScanner 4.0"
+        
+        // Maven Tools
+        checkstyleConfig    =   "java-checkstyle-file"
+        jdkTool             =   "java-11-openjdk"
+        mavenTool           =   "apache-maven-3.6.3"
+        mavenConfig         =   "m2-user-setting-file"
+        mavenRepo           =   "snapshots::default::<URL>"
+        
+        projectBranch = """${sh(
+            returnStdout: true,
+            script: 'echo ${BRANCH_NAME} | tr -d \'\n\' | tr \'[:upper:]\' \'[:lower:]\' | cut -c 1-20'
+        )}"""
+        gitRepository = """${sh(
+            returnStdout: true,
+            script: '[[ ! -z \"${GIT_URL}\" ]] && echo $(basename \"${GIT_URL}\" \".${GIT_URL##*.}\") | tr \':\' \'/\' | tr -d \'\n\' | tr \'[:upper:]\' \'[:lower:]\' || echo $(basename \"${GIT_URL_1}\" \".${GIT_URL_1##*.}\") | tr \':\' \'/\' | tr -d \'\n\' | tr \'[:upper:]\' \'[:lower:]\''
+        )}"""
+        gitProject = """${sh(
+            returnStdout: true,
+            script: '[[ ! -z \"${GIT_UR}\" ]] && echo \"${GIT_URL/://}\" | rev | cut -d \'/\' -f 2 | rev | tr \':\' \'/\' | tr -d \'\n\' | tr \'[:upper:]\' \'[:lower:]\' || echo \"${GIT_URL_1/://}\" | rev | cut -d \'/\' -f 2 | rev | tr \':\' \'/\' | tr -d \'\n\' | tr \'[:upper:]\' \'[:lower:]\''
+        )}"""
+    }
+    stages {
+        stage("clean") {
+            steps {
+                withMaven(jdk:"${env.jdkTool}"
+                          maven:"${env.mavenTool}"
+                          mavenSettingsConfig: "${env.mavenConfig}") {
+                    sh 'mvn clean'
+                }
+            }
+        }
+        
+        stage("test") {
+            steps {
+                withMaven(jdk:"${env.jdkTool}"
+                          maven:"${env.mavenTool}"
+                          mavenSettingsConfig: "${env.mavenConfig}") {
+                    sh 'mvn org.jacoco:jacoco-maven-plugin:prepare-agent test org.jacoco:jacoco-maven-plugin:report'
+                    sh 'mvn org.jacoco:jacoco-maven-plugin:prepare-agent-integration integration-test org.jacoco:jacoco-maven-plugin:report-integration'
+                }
+            }
+        }
+        
+        stage("build") {
+            steps {
+                withMaven(jdk:"${env.jdkTool}"
+                          maven:"${env.mavenTool}"
+                          mavenSettingsConfig: "${env.mavenConfig}") {
+                    sh 'mvn install -DskipTests=true -Dmaven.test.failure.ignore=true'
+                }
+            }
+        }
+
+        stage("analyse") {
+            steps {
+                withMaven(jdk:"${env.jdkTool}"
+                          maven:"${env.mavenTool}"
+                          mavenSettingsConfig: "${env.mavenConfig}") {
+                    // Alot of code analysis extras are done as part of reporting which is in the site phase, so lets run that
+                    // first
+                    sh "mvn deploy pre-site -DskipTests=true -Dmaven.test.failure.ignore=true -DaltDeploymentRepository=${env.mavenRepo}"
+                    // standardised set of analysis
+                    sh "mvn com.github.spotbugs:spotbugs-maven-plugin:spotbugs:spotbugs -Dspotbugs.xmlOutput=true -Dspotbugs.failOnError=false -Deffort=Max -Dthreshold=Low || true"
+                    sh "mvn com.github.spotbugs:spotbugs-maven-plugin:spotbugs:spotbugs -Dspotbugs.xmlOutput=true -Dspotbugs.failOnError=false -Deffort=Max -Dthreshold=Low || true"
+                    sh "mvn com.github.spotbugs:spotbugs-maven-plugin:spotbugs:spotbugs -Dspotbugs.xmlOutput=true -Dspotbugs.failOnError=false -Deffort=Max -Dthreshold=Low || true"
+
+                    sh "mvn deploy pre-site -DskipTests=true -Dmaven.test.failure.ignore=true -DaltDeploymentRepository=${env.mavenRepo} || true"
+                }
+            }
+        }
+
+        stage("analyse-sonar") {
+            steps {
+                withMaven(jdk:"${env.jdkTool}"
+                          maven:"${env.mavenTool}"
+                          mavenSettingsConfig: "${env.mavenConfig}") {
+                    sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar'
+                }
+            }
+        }
+    }
+    post {
+        
+    }
+}
