@@ -86,12 +86,12 @@ jobs:
       - name: Prep ESLint files for sonar
         if: ${{ hashFiles('eslint_report.json') != '' }}
         run: |
-          sed -i 's+/home/runner/work/***+/github/workspace+g' eslint_report.json
+          sed -i 's|${{ github.workspace }}/||g' eslint_report.json
 
       - name: Prep Style files for sonar
         if: ${{ hashFiles('stylelint_report.json') != '' }}
         run: |
-          sed -i 's+/home/runner/work/***+/github/workspace+g' stylelint_report.json
+          sed -i 's|${{ github.workspace }}/||g' stylelint_report.json
 
       # Automatic Scanner is enabled
       - name: SonarCloud Analysis
