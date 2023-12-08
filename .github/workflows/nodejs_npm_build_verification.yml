@@ -94,8 +94,9 @@ jobs:
           sed -i 's|${{ github.workspace }}/||g' stylelint_report.json
 
       - name: Test for lcov
-        if: ${{ hashFiles('./coverage/lcov.info') != '' }}
+        if: ${{ hashFiles('./coverage/lcov.info') == '' }}
         run: |
+          npm run test -- --coverage
           cat ./coverage/lcov.info
 
       # Automatic Scanner is enabled
