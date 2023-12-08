@@ -83,6 +83,16 @@ jobs:
           name: stylelint_report.txt
           path: ${GITHUB_WORKSPACE}/stylelint_report.json
 
+      - name: Prep ESLint files for sonar
+        if: ${{ hashFiles('eslint_report.json') != '' }}
+        run: |
+          sed -i 's+/home/runner/work/***+/github/workspace+g' eslint_report.json
+
+      - name: Prep Style files for sonar
+        if: ${{ hashFiles('stylelint_report.json') != '' }}
+        run: |
+          sed -i 's+/home/runner/work/***+/github/workspace+g' stylelint_report.json
+
       # Automatic Scanner is enabled
       - name: SonarCloud Analysis
         uses: SonarSource/sonarcloud-github-action@master
