@@ -93,6 +93,11 @@ jobs:
         run: |
           sed -i 's|${{ github.workspace }}/||g' stylelint_report.json
 
+      - name: Test for lcov
+        if: ${{ hashFiles('./coverage/lcov.info') != '' }}
+        run: |
+          cat ./coverage/lcov.info
+
       # Automatic Scanner is enabled
       - name: SonarCloud Analysis
         uses: SonarSource/sonarcloud-github-action@master
