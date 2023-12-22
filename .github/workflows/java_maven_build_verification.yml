@@ -34,12 +34,10 @@ jobs:
           gpg-passphrase: ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
 
       - name: Retrieve Maven Settings File
-        run: wget https://raw.githubusercontent.com/PallasSystems/infrastructure-ci/main/.github/workflows/java_maven_settings.xml
+        run: wget https://raw.githubusercontent.com/PallasSystems/infrastructure-ci/main/.github/workflows/java_maven_settings.xml -P /tmp/
 
       - name: Build with Maven
-        run: |
-          cat java_maven_settings.xml
-          mvn --batch-mode --settings java_maven_settings.xml clean install
+        run: mvn --batch-mode --settings /tmp/java_maven_settings.xml clean install
         env:
           GITHUB_USER: ${{ secrets.SCM_USER }}
           GITHUB_TOKEN: ${{ secrets.SCM_TOKEN }}
@@ -64,10 +62,10 @@ jobs:
           gpg-passphrase: ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
 
       - name: Retrieve Maven Settings File
-        run: wget https://raw.githubusercontent.com/PallasSystems/infrastructure-ci/main/.github/workflows/java_maven_settings.xml
+        run: wget https://raw.githubusercontent.com/PallasSystems/infrastructure-ci/main/.github/workflows/java_maven_settings.xml -P /tmp/
 
       - name: Jacoco Coverage
-        run: mvn --batch-mode --settings java_maven_settings.xml org.jacoco:jacoco-maven-plugin:0.8.8:prepare-agent test org.jacoco:jacoco-maven-plugin:0.8.8:report install
+        run: mvn --batch-mode --settings /tmp/java_maven_settings.xml org.jacoco:jacoco-maven-plugin:0.8.8:prepare-agent test org.jacoco:jacoco-maven-plugin:0.8.8:report install
         env:
           GITHUB_USER: ${{ secrets.SCM_USER }}
           GITHUB_TOKEN: ${{ secrets.SCM_TOKEN }}
@@ -75,7 +73,7 @@ jobs:
           GPG_PASSPHRASE: ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
 
       - name: Checkstyle
-        run: mvn --batch-mode --settings java_maven_settings.xml org.apache.maven.plugins:maven-checkstyle-plugin:3.3.0:checkstyle-aggregate
+        run: mvn --batch-mode --settings /tmp/java_maven_settings.xml org.apache.maven.plugins:maven-checkstyle-plugin:3.3.0:checkstyle-aggregate
         env:
           GITHUB_USER: ${{ secrets.SCM_USER }}
           GITHUB_TOKEN: ${{ secrets.SCM_TOKEN }}
@@ -88,7 +86,7 @@ jobs:
           path: '**/checkstyle-result.xml'
 
       - name: SpotBugs
-        run: mvn --batch-mode --settings java_maven_settings.xml com.github.spotbugs:spotbugs-maven-plugin:4.6.0.0:spotbugs -Dspotbugs.xmlOutput=true -Dspotbugs.effort=max -Dspotbugs.failOnError=false -Dspotbugs.threshold=low
+        run: mvn --batch-mode --settings /tmp/java_maven_settings.xml com.github.spotbugs:spotbugs-maven-plugin:4.6.0.0:spotbugs -Dspotbugs.xmlOutput=true -Dspotbugs.effort=max -Dspotbugs.failOnError=false -Dspotbugs.threshold=low
         env:
           GITHUB_USER: ${{ secrets.SCM_USER }}
           GITHUB_TOKEN: ${{ secrets.SCM_TOKEN }}
@@ -101,7 +99,7 @@ jobs:
           path: '**/spotbugsXml.xml'
 
       - name: PMD
-        run: mvn --batch-mode --settings java_maven_settings.xml --file pom.xml pmd:pmd pmd:cpd
+        run: mvn --batch-mode --settings /tmp/java_maven_settings.xml --file pom.xml pmd:pmd pmd:cpd
         env:
           GITHUB_USER: ${{ secrets.SCM_USER }}
           GITHUB_TOKEN: ${{ secrets.SCM_TOKEN }}
@@ -112,7 +110,7 @@ jobs:
           path: '**/pmd.xml'
 
       - name: SonarCloud Analysis
-        run: mvn --batch-mode --settings java_maven_settings.xml --file pom.xml org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+        run: mvn --batch-mode --settings /tmp/java_maven_settings.xml --file pom.xml org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
         env:
           GITHUB_USER: ${{ secrets.SCM_USER }}
           GITHUB_TOKEN: ${{ secrets.SCM_TOKEN }}
