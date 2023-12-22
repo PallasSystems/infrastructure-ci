@@ -1,9 +1,18 @@
 name: Build Verification of Maven project
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
-  workflow_dispatch:
+  workflow_call:
+    secrets:
+      GPG_PRIVATE_KEY:
+        required: true
+      GPG_PRIVATE_KEY_PASSPHRASE:
+        required: true
+      SCM_USER:
+        required: true
+      SCM_TOKEN:
+        required: true
+      SONAR_TOKEN:
+        required: true
 
 jobs:
   build:
