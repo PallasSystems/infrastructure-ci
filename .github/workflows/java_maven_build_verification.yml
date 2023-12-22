@@ -34,7 +34,7 @@ jobs:
           gpg-passphrase: ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
 
       - name: Retrieve Maven Settings File
-        run: wget https://github.com/PallasSystems//infrastructure-ci/.github/workflows/java_maven_settings.xml
+        run: wget https://raw.githubusercontent.com/PallasSystems/infrastructure-ci/main/.github/workflows/java_maven_settings.xml
 
       - name: Build with Maven
         run: mvn --batch-mode --settings java_maven_settings.xml clean install
@@ -62,7 +62,7 @@ jobs:
           gpg-passphrase: ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
 
       - name: Retrieve Maven Settings File
-        run: wget https://github.com/PallasSystems//infrastructure-ci/.github/workflows/java_maven_settings.xml
+        run: wget https://raw.githubusercontent.com/PallasSystems/infrastructure-ci/main/.github/workflows/java_maven_settings.xml
 
       - name: Jacoco Coverage
         run: mvn --batch-mode --settings java_maven_settings.xml org.jacoco:jacoco-maven-plugin:0.8.8:prepare-agent test org.jacoco:jacoco-maven-plugin:0.8.8:report install
