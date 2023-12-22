@@ -3,6 +3,8 @@ name: Release Maven project
 on:
   workflow_call:
     secrets:
+      GPG_KEY_ID:
+        required: true
       GPG_PRIVATE_KEY:
         required: true
       GPG_PRIVATE_KEY_PASSPHRASE:
