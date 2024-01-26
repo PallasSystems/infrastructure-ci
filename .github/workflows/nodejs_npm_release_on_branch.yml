@@ -9,7 +9,7 @@ on:
         required: true
       SONAR_TOKEN:
         required: true
-      GITHUB_REPOSITORY:
+      SCM_REPOSITORY:
         required: true
       GPG_PRIVATE_KEY:
         required: true
@@ -116,7 +116,8 @@ jobs:
         env:
           GITHUB_USER: "pallasCI <continuous.integration@pallas.uk>"
           GITHUB_TOKEN: ${{ secrets.SCM_TOKEN }}
-          GITHUB_REPOSITORY: "website-core"
+          GITHUB_PROJECT: ${{ secrets.SCM_REPOSITORY }}
+          GITHUB_REPOSITORY: ${{ secrets.SCM_REPOSITORY }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Push the Release Change into the Branch
