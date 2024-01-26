@@ -15,6 +15,8 @@ on:
         required: true
       GPG_PRIVATE_KEY_PASSPHRASE:
         required: true
+      NPM_TOKEN:
+        required: true
 
 jobs:
   release:
@@ -49,15 +51,6 @@ jobs:
           git_commit_gpgsign: true
           git_push_gpgsign: false
           git_tag_gpgsign: true
-
-      - name: Setup Pallas Scoped Github package repository
-        run: echo "@pallassystems:registry=https://registry.npmjs.org/" >> ~/.npmrc
-
-      - name: Add authentication for scoped package repository
-        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.SCM_TOKEN }}" >> ~/.npmrc
-
-      - name: Add normal registry
-        run: echo "registry=https://registry.npmjs.org" >> ~/.npmrc
 
       - name: Extract branch name
         id: extract_branch
