@@ -85,7 +85,7 @@ jobs:
         continue-on-error: true
 
       - name: ESLint Annotate from Report JSON
-        uses: ataylorme/eslint-annotate-action@2.2.0
+        uses: ataylorme/eslint-annotate-action@3.0.0
         with:
           report-json: "eslint_report.json"
 
