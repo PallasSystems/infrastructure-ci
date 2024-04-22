@@ -90,7 +90,7 @@ jobs:
           report-json: "eslint_report.json"
 
       - name: Upload ESLint report
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: eslint_report.json
           path: ${GITHUB_WORKSPACE}/eslint_report.json

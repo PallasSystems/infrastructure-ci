@@ -90,7 +90,7 @@ jobs:
           pr_body: 'Performed successfull release, needs to be merged back into main branch'
 
       - name: Upload Release Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: 'v${{ env.BRANCH_NAME }}'
           path: '**/target/*${{ env.BRANCH_NAME }}*'
