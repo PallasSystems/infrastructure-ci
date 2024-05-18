@@ -20,9 +20,14 @@ on:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
-  contents: read
-  pages: write
+  contents: write
+  actions: read
+  checks: write
   id-token: write
+  issues: write
+  packages: write
+  pages: write
+  pull-requests: write
 
 jobs:
   release:
