@@ -125,7 +125,7 @@ jobs:
 
       - name: Setup Docs Pages
         if: ${{ hashFiles('docs/dist') != '' }}
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v5
       - name: Upload Docs artifact
         if: ${{ hashFiles('docs/dist') != '' }}
         uses: actions/upload-pages-artifact@v3
