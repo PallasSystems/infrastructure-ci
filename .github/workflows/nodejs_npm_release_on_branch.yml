@@ -35,7 +35,7 @@ jobs:
     environment:
       name: github-pages
     steps:
-      - uses: actions/checkout@v4.1.5
+      - uses: actions/checkout@v4.1.7
       - name: Set up Node.JS 20.x
         uses: actions/setup-node@v4
         with:
