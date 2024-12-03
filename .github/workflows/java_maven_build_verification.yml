@@ -18,6 +18,9 @@ permissions:
   contents: read
   actions: read
   checks: write
+  issues: read
+  packages: read
+  pull-requests: read
 
 jobs:
   build:
@@ -32,8 +35,8 @@ jobs:
       - name: Set up JDK ${{ matrix.version }}
         uses: actions/setup-java@v4
         with:
-          cache: 'maven'
-          distribution: 'temurin'
+          cache: "maven"
+          distribution: "temurin"
           java-version: ${{ matrix.version }}
 
       - name: Retrieve Maven Settings File
@@ -56,8 +59,8 @@ jobs:
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          cache: 'maven'
-          distribution: 'temurin'
+          cache: "maven"
+          distribution: "temurin"
           java-version: 21
 
       - name: Retrieve Maven Settings File
@@ -82,7 +85,7 @@ jobs:
       - name: Checkstyle Annotation
         uses: jwgmeligmeyling/checkstyle-github-action@master
         with:
-          path: '**/checkstyle-result.xml'
+          path: "**/checkstyle-result.xml"
 
       - name: SpotBugs
         run: mvn --batch-mode --settings /tmp/java_maven_settings.xml com.github.spotbugs:spotbugs-maven-plugin:4.8.3.1:spotbugs -Dspotbugs.xmlOutput=true -Dspotbugs.effort=max -Dspotbugs.failOnError=false -Dspotbugs.threshold=low
@@ -95,7 +98,7 @@ jobs:
       - name: SpotBugs Annotation
         uses: jwgmeligmeyling/spotbugs-github-action@master
         with:
-          path: '**/spotbugsXml.xml'
+          path: "**/spotbugsXml.xml"
 
       - name: PMD
         run: mvn --batch-mode --settings /tmp/java_maven_settings.xml --file pom.xml pmd:pmd pmd:cpd
@@ -106,7 +109,7 @@ jobs:
       - name: PMD Annotation
         uses: jwgmeligmeyling/pmd-github-action@master
         with:
-          path: '**/pmd.xml'
+          path: "**/pmd.xml"
 
       - name: SonarCloud Analysis
         run: mvn --batch-mode --settings /tmp/java_maven_settings.xml --file pom.xml org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
