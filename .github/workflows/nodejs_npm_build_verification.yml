@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [ 18.X, 20.x, 22.x ]
+        node-version: [18.X, 20.x, 22.x]
 
     steps:
       - uses: actions/checkout@v4.1.7
@@ -80,13 +80,13 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: eslint_report.json
-          path: ${GITHUB_WORKSPACE}/eslint_report.json
+          path: eslint_report.json
 
       - name: Upload StyleLint report
         uses: actions/upload-artifact@v4
         with:
-          name: stylelint_report.txt
-          path: ${GITHUB_WORKSPACE}/stylelint_report.json
+          name: stylelint_report.json
+          path: stylelint_report.json
 
       - name: Prep ESLint files for sonar
         if: ${{ hashFiles('eslint_report.json') != '' }}

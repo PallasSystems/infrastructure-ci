@@ -106,7 +106,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: eslint_report.json
-          path: ${GITHUB_WORKSPACE}/eslint_report.json
+          path: eslint_report.json
 
       # Automatic Scanner is enabled
       - name: SonarCloud Analysis
@@ -131,7 +131,7 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           # Upload dist folder
-          path: './docs/dist'
+          path: "./docs/dist"
       - name: Deploy Docs to GitHub Pages
         if: ${{ hashFiles('docs/dist') != '' }}
         id: deployment
