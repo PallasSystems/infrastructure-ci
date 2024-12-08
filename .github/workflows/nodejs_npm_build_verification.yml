@@ -57,7 +57,7 @@ jobs:
         run: npm run build --if-present
 
       - name: Run NPM Test
-        run: npm run test
+        run: npm run test --if-present
 
       - name: Build docs
         if: ${{ hashFiles('docs/package.json') != '' }}
@@ -65,4 +65,4 @@ jobs:
           cd docs
           npm ci --if-present
           npm run build --if-present
-          npm run test
+          npm run test --if-present
