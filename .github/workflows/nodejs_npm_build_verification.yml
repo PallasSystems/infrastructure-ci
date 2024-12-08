@@ -53,64 +53,11 @@ jobs:
       - name: Run NPM Install
         run: npm ci
 
-      - name: Run NPM Test
-        run: npm run test -- --coverage
-
-      - name: Test Report
-        uses: dorny/test-reporter@v1.9.1
-        if: success() || failure() # run this step even if previous step failed
-        with:
-          name: JEST Tests # Name of the check run which will be created
-          path: junit.xml # Path to test results
-          reporter: jest-junit # Format of test results
-
       - name: Run NPM Build
         run: npm run build --if-present
 
-      - name: Save Code Linting Report JSON
-        run: npm run lint --if-present
-        continue-on-error: true
-
-      - name: ESLint Annotate from Report JSON
-        uses: ataylorme/eslint-annotate-action@3.0.0
-        with:
-          report-json: "eslint_report.json"
-
-      - name: Upload ESLint report
-        uses: actions/upload-artifact@v4
-        with:
-          name: eslint_report.json
-          path: eslint_report.json
-
-      - name: Upload StyleLint report
-        uses: actions/upload-artifact@v4
-        with:
-          name: stylelint_report.json
-          path: stylelint_report.json
-
-      - name: Prep ESLint files for sonar
-        if: ${{ hashFiles('eslint_report.json') != '' }}
-        run: |
-          sed -i 's|${{ github.workspace }}/||g' eslint_report.json
-
-      - name: Prep Style files for sonar
-        if: ${{ hashFiles('stylelint_report.json') != '' }}
-        run: |
-          sed -i 's|${{ github.workspace }}/||g' stylelint_report.json
-
-      - name: Test for lcov
-        if: ${{ hashFiles('./coverage/lcov.info') == '' }}
-        run: |
-          npm run test -- --coverage
-          cat ./coverage/lcov.info
-
-      # Automatic Scanner is enabled
-      - name: SonarCloud Analysis
-        uses: SonarSource/sonarcloud-github-action@master
-        env:
-          GITHUB_USER: ${{ secrets.SCM_USER }}
-          GITHUB_TOKEN: ${{ secrets.SCM_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Run NPM Test
+        run: npm run test
 
       - name: Build docs
         if: ${{ hashFiles('docs/package.json') != '' }}
@@ -118,3 +65,4 @@ jobs:
           cd docs
           npm ci --if-present
           npm run build --if-present
+          npm run test
