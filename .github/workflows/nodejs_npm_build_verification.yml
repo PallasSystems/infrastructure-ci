@@ -1,4 +1,4 @@
-name: Node.JS Build Support
+name: Check Node.JS version support
 
 on:
   workflow_call:
