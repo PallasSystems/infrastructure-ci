@@ -80,6 +80,9 @@ jobs:
         run: npm ci
 
       - name: Run NPM Build
+        run: npm run build --if-present
+
+      - name: Run NPM Test
         run: npm run test --if-present -- --coverage --passWithNoTests
 
       - name: Publish package on NPM 📦
