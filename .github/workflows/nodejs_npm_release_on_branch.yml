@@ -59,8 +59,8 @@ jobs:
           passphrase: ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
           git_user_signingkey: true
           git_config_global: true
-          git_committer_name: "pallasCI"
-          git_committer_email: "continuous.integration@pallas.uk"
+          git_committer_name: 'pallasCI'
+          git_committer_email: 'continuous.integration@pallas.uk'
           git_commit_gpgsign: true
           git_push_gpgsign: false
           git_tag_gpgsign: true
@@ -81,13 +81,14 @@ jobs:
 
       - name: Run NPM Build
         run: npm run build --if-present
-        
+
       - name: Build docs website
         if: ${{ hashFiles('docs/package.json') != '' }}
         run: |
           cd docs
           npm ci
           npm run build --if-present
+          npm run test -- --coverage --passWithNoTests
 
       - name: Setup Docs Pages
         if: ${{ hashFiles('docs/dist') != '' }}
@@ -97,7 +98,7 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           # Upload dist folder
-          path: "./docs/dist"
+          path: './docs/dist'
       - name: Deploy Docs to GitHub Pages
         if: ${{ hashFiles('docs/dist') != '' }}
         id: deployment
@@ -109,7 +110,7 @@ jobs:
           git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
           npm publish --access public
         env:
-          GITHUB_USER: "pallasCI <continuous.integration@pallas.uk>"
+          GITHUB_USER: 'pallasCI <continuous.integration@pallas.uk>'
           GITHUB_TOKEN: ${{ secrets.SCM_TOKEN }}
           GITHUB_PROJECT: ${{ secrets.SCM_REPOSITORY }}
           GITHUB_REPOSITORY: ${{ secrets.SCM_REPOSITORY }}
@@ -130,7 +131,7 @@ jobs:
         uses: repo-sync/pull-request@v2.12.1
         with:
           source_branch: release/${{ env.BRANCH_NAME }}
-          destination_branch: "main"
+          destination_branch: 'main'
           github_token: ${{ secrets.SCM_TOKEN }}
-          pr_title: "Merge Release back to main"
-          pr_body: "Performed successfull release, needs to be merged back into main branch"
+          pr_title: 'Merge Release back to main'
+          pr_body: 'Performed successfull release, needs to be merged back into main branch'
