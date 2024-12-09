@@ -58,11 +58,3 @@ jobs:
 
       - name: Run NPM Test
         run: npm run test --if-present
-
-      - name: Build docs
-        if: ${{ hashFiles('docs/package.json') != '' }}
-        run: |
-          cd docs
-          npm ci --if-present
-          npm run build --if-present
-          npm run test --if-present

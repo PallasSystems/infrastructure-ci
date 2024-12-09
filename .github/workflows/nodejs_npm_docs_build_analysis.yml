@@ -55,7 +55,7 @@ jobs:
         run: npm ci
 
       - name: Run NPM Test
-        run: npm run test -- --coverage --passWithNoTests
+        run: npm run test -- --coverage --passWithNoTests --if-present
 
       - name: Test Report
         uses: dorny/test-reporter@v1.9.1
