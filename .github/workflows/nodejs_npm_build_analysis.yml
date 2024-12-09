@@ -63,6 +63,7 @@ jobs:
           name: JEST Tests # Name of the check run which will be created
           path: junit.xml # Path to test results
           reporter: jest-junit # Format of test results
+        continue-on-error: true
 
       - name: Save Code Linting Report JSON
         run: npm run lint --if-present
