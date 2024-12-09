@@ -80,36 +80,34 @@ jobs:
         run: npm ci
 
       - name: Run NPM Build
+        run: npm run build --if-present
+
+      - name: Switch to docs docs
+        if: ${{ hashFiles('docs/package.json') != '' }}
+        run: cd docs
+
+      - name: Install docs website
+        if: ${{ hashFiles('docs/package.json') != '' }}
+        run: npm ci
+
+      - name: Build docs website
+        if: ${{ hashFiles('docs/package.json') != '' }}
+        run: npm run build --if-present
+
+      - name: Test docs website
+        if: ${{ hashFiles('docs/package.json') != '' }}
         run: npm run test --if-present -- --coverage --passWithNoTests
 
-      - name: Publish package on NPM 📦
-        if: ${{ contains(github.ref, 'refs/heads/release') }}
-        run: |
-          git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
-          npm publish --access public
-        env:
-          GITHUB_USER: 'pallasCI <continuous.integration@pallas.uk>'
-          GITHUB_TOKEN: ${{ secrets.SCM_TOKEN }}
-          GITHUB_PROJECT: ${{ secrets.SCM_REPOSITORY }}
-          GITHUB_REPOSITORY: ${{ secrets.SCM_REPOSITORY }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Push the Release Change into the Branch
-        if: ${{ contains(github.ref, 'refs/heads/release') }}
-        run: git push origin release/${{ env.BRANCH_NAME }}
-
-      - name: Increase Patch Version
-        run: 'npm version patch -m "[NPM Release] Moving to Next Dev Version"'
-
-      - name: Push the Patch change into the Branch
-        if: ${{ contains(github.ref, 'refs/heads/release') }}
-        run: git push origin release/${{ env.BRANCH_NAME }}
-
-      - name: Create pull request into main
-        uses: repo-sync/pull-request@v2.12.1
+      - name: Setup Docs Pages
+        if: ${{ hashFiles('docs/dist') != '' }}
+        uses: actions/configure-pages@v5
+      - name: Upload Docs artifact
+        if: ${{ hashFiles('docs/dist') != '' }}
+        uses: actions/upload-pages-artifact@v3
         with:
-          source_branch: release/${{ env.BRANCH_NAME }}
-          destination_branch: 'main'
-          github_token: ${{ secrets.SCM_TOKEN }}
-          pr_title: 'Merge Release back to main'
-          pr_body: 'Performed successfull release, needs to be merged back into main branch'
+          # Upload dist folder
+          path: './docs/dist'
+      - name: Deploy Docs to GitHub Pages
+        if: ${{ hashFiles('docs/dist') != '' }}
+        id: deployment
+        uses: actions/deploy-pages@v4

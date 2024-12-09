@@ -1,4 +1,3 @@
-
 name: Build Verification of Node.JS project
 
 on:
@@ -52,7 +51,7 @@ jobs:
         run: npm ci
 
       - name: Run NPM Test
-        run: npm run test -- --coverage
+        run: npm run test --if-present -- --coverage --passWithNoTests
 
       - name: Test Report
         uses: dorny/test-reporter@v1.9.1
@@ -69,7 +68,7 @@ jobs:
       - name: ESLint Annotate from Report JSON
         uses: ataylorme/eslint-annotate-action@3.0.0
         with:
-          report-json: "eslint_report.json"
+          report-json: 'eslint_report.json'
 
       - name: Upload ESLint report
         uses: actions/upload-artifact@v4
