@@ -68,10 +68,9 @@ jobs:
         if: success() || failure() # run this step even if previous step failed
         with:
           name: JEST Doc Tests # Name of the check run which will be created
-          path: junit.xml # Path to test results
+          path: docs/junit.xml # Path to test results
           reporter: jest-junit # Format of test results
         continue-on-error: true
-        working-directory: docs
 
       - name: Save Code Linting Report JSON on docs
         run: npm run lint --if-present
@@ -81,22 +80,19 @@ jobs:
       - name: ESLint Annotate from Report JSON on docs
         uses: ataylorme/eslint-annotate-action@3.0.0
         with:
-          report-json: 'eslint_report.json'
+          report-json: 'docs/eslint_report.json'
         continue-on-error: true
-        working-directory: docs
 
       - name: Upload ESLint report on docs
         uses: actions/upload-artifact@v4
         with:
           name: eslint_docs_report.json
-          path: eslint_report.json
+          path: docs/eslint_report.json
         continue-on-error: true
-        working-directory: docs
 
       - name: Upload StyleLint report on docs
         uses: actions/upload-artifact@v4
         with:
           name: stylelint_docs_report.json
-          path: stylelint_report.json
+          path: docs/stylelint_report.json
         continue-on-error: true
-        working-directory: docs
