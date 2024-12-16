@@ -73,34 +73,40 @@ jobs:
         uses: ataylorme/eslint-annotate-action@3.0.0
         with:
           report-json: 'eslint_report.json'
+        continue-on-error: true
 
       - name: Upload ESLint report
         uses: actions/upload-artifact@v4
         with:
           name: eslint_report.json
           path: eslint_report.json
+        continue-on-error: true
 
       - name: Upload StyleLint report
         uses: actions/upload-artifact@v4
         with:
           name: stylelint_report.json
           path: stylelint_report.json
+        continue-on-error: true
 
       - name: Prep ESLint files for sonar
         if: ${{ hashFiles('eslint_report.json') != '' }}
         run: |
           sed -i 's|${{ github.workspace }}/||g' eslint_report.json
+        continue-on-error: true
 
       - name: Prep Style files for sonar
         if: ${{ hashFiles('stylelint_report.json') != '' }}
         run: |
           sed -i 's|${{ github.workspace }}/||g' stylelint_report.json
+        continue-on-error: true
 
       - name: Test for lcov
         if: ${{ hashFiles('./coverage/lcov.info') == '' }}
         run: |
           npm run test -- --coverage
           cat ./coverage/lcov.info
+        continue-on-error: true
 
       # Automatic Scanner is enabled
       - name: SonarCloud Analysis

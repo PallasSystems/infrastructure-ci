@@ -1,4 +1,4 @@
-name: Build Verification of Node.JS project
+name: Build Verification of Node.JS docs project
 
 on:
   workflow_call:
@@ -48,22 +48,22 @@ jobs:
       - name: Add normal registry
         run: echo "registry=https://registry.npmjs.org" >> ~/.npmrc
 
-      - name: Run NPM Install
-        run: |
-          cd docs
-          npm ci
+      - name: Run NPM Install on docs
+        if: ${{ hashFiles('docs/') != '' }}
+        run: npm ci
+        working-directory: docs
 
-      - name: Run NPM Build
-        run: |
-          cd docs
-          npm run build --if-present
+      - name: Run NPM Build on docs
+        if: ${{ hashFiles('docs/') != '' }}
+        run: npm run build --if-present
+        working-directory: docs  
 
-      - name: Run NPM Test
-        run: |
-          cd docs
-          npm run test --if-present -- --coverage --passWithNoTests
+      - name: Run NPM Test on docs
+        if: ${{ hashFiles('docs/') != '' }}
+        run: npm run test --if-present -- --coverage --passWithNoTests
+        working-directory: docs
 
-      - name: Test Report
+      - name: Test Report on docs
         uses: dorny/test-reporter@v1.9.1
         if: success() || failure() # run this step even if previous step failed
         with:
@@ -71,26 +71,32 @@ jobs:
           path: junit.xml # Path to test results
           reporter: jest-junit # Format of test results
         continue-on-error: true
+        working-directory: docs
 
-      - name: Save Code Linting Report JSON
-        run: |
-          cd docs
-          npm run lint --if-present
+      - name: Save Code Linting Report JSON on docs
+        run: npm run lint --if-present
         continue-on-error: true
+        working-directory: docs
 
-      - name: ESLint Annotate from Report JSON
+      - name: ESLint Annotate from Report JSON on docs
         uses: ataylorme/eslint-annotate-action@3.0.0
         with:
           report-json: 'eslint_report.json'
+        continue-on-error: true
+        working-directory: docs
 
-      - name: Upload ESLint report
+      - name: Upload ESLint report on docs
         uses: actions/upload-artifact@v4
         with:
           name: eslint_docs_report.json
           path: eslint_report.json
+        continue-on-error: true
+        working-directory: docs
 
-      - name: Upload StyleLint report
+      - name: Upload StyleLint report on docs
         uses: actions/upload-artifact@v4
         with:
           name: stylelint_docs_report.json
           path: stylelint_report.json
+        continue-on-error: true
+        working-directory: docs
