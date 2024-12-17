@@ -32,6 +32,8 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
     steps:
       - uses: actions/checkout@v4.2.2
       - name: Set up Node.JS 22.x
