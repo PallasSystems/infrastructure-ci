@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [20.x, 22.x]
+        node-version: [18.0.x, 20.x, 22.x]
 
     steps:
       - uses: actions/checkout@v4.2.2
@@ -55,3 +55,6 @@ jobs:
 
       - name: Run NPM Build
         run: npm run build --if-present
+
+      - name: Run NPM Test
+        run: npm run test --if-present -- --coverage --passWithNoTests
