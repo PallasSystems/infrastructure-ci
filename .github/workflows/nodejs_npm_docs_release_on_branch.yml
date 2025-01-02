@@ -3,37 +3,28 @@ name: Release NPM project
 on:
   workflow_call:
     secrets:
-      SCM_USER:
-        required: true
-      SCM_TOKEN:
-        required: true
-      SONAR_TOKEN:
-        required: true
-      SCM_REPOSITORY:
-        required: true
       GPG_PRIVATE_KEY:
         required: true
       GPG_PRIVATE_KEY_PASSPHRASE:
         required: true
-      NPM_TOKEN:
-        required: true
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
-  contents: write
-  actions: read
-  checks: write
-  id-token: write
-  issues: write
-  packages: write
+  contents: read
+  packages: read
   pages: write
-  pull-requests: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
   release:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4.2.2
       - name: Set up Node.JS 22.x
