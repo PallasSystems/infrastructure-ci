@@ -104,7 +104,5 @@ jobs:
         run: git push origin ${GITHUB_REF}
 
       - name: Create pull request into main
-        run: |
-          gh_pr_up() { gh pr create $* || gh pr edit $* }
-          gh_pr_up --title "Merge Release back to main" --body "Performed successfull release, needs to be merged back into main branch"
+        run: 'gh pr create --title "Merge Release back to main" --body "Performed successfull release, needs to be merged back into main branch"'
   
