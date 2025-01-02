@@ -26,7 +26,6 @@ permissions:
   id-token: write
   issues: write
   packages: write
-  pages: write
   pull-requests: write
 
 jobs:
@@ -67,11 +66,11 @@ jobs:
         id: extract_branch
         if: ${{ contains(github.ref, 'refs/heads/release') }}
         shell: bash
-        run: echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/} | tr / - | sed 's/release-*//')" >> $GITHUB_ENV
+        run: echo "VERSION=$(echo ${GITHUB_REF#refs/heads/} | tr / - | sed 's/release-*//')" >> $GITHUB_ENV
 
       - name: Set Project Version
         if: ${{ contains(github.ref, 'refs/heads/release') }}
-        run: 'npm version ${{ env.BRANCH_NAME }} -m "[NPM Release] Performing release: ${{ env.BRANCH_NAME }}"'
+        run: 'npm version ${{ env.VERSION }} -m "[NPM Release] Performing release: ${{ env.VERSION }}"'
         continue-on-error: true
 
       - name: Run NPM Install
@@ -91,26 +90,20 @@ jobs:
         env:
           GITHUB_USER: 'pallasCI <continuous.integration@pallas.uk>'
           GITHUB_TOKEN: ${{ secrets.SCM_TOKEN }}
-          GITHUB_PROJECT: ${{ secrets.SCM_REPOSITORY }}
-          GITHUB_REPOSITORY: ${{ secrets.SCM_REPOSITORY }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Push the Release Change into the Branch
         if: ${{ contains(github.ref, 'refs/heads/release') }}
-        run: git push origin release/${{ env.BRANCH_NAME }}
+        run: git push origin ${GITHUB_REF}
 
       - name: Increase Patch Version
         run: 'npm version patch -m "[NPM Release] Moving to Next Dev Version"'
 
       - name: Push the Patch change into the Branch
         if: ${{ contains(github.ref, 'refs/heads/release') }}
-        run: git push origin release/${{ env.BRANCH_NAME }}
+        run: git push origin ${GITHUB_REF}
 
       - name: Create pull request into main
-        uses: repo-sync/pull-request@v2.12.1
-        with:
-          source_branch: release/${{ env.BRANCH_NAME }}
-          destination_branch: 'main'
-          github_token: ${{ secrets.SCM_TOKEN }}
-          pr_title: 'Merge Release back to main'
-          pr_body: 'Performed successfull release, needs to be merged back into main branch'
+        run: |
+          gh_pr_up() { gh pr create $* || gh pr edit $* }
+          gh_pr_up --title "Merge Release back to main" --body "Performed successfull release, needs to be merged back into main branch"  
