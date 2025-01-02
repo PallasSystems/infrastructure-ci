@@ -89,7 +89,7 @@ jobs:
           npm publish --access public
         env:
           GITHUB_USER: 'pallasCI <continuous.integration@pallas.uk>'
-          GITHUB_TOKEN: ${{ secrets.SCM_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Push the Release Change into the Branch
@@ -105,4 +105,6 @@ jobs:
 
       - name: Create pull request into main
         run: 'gh pr create --title "Merge Release back to main" --body "Performed successfull release, needs to be merged back into main branch"'
+        env:
+          GH_TOKEN: ${{ github.token }}
   
