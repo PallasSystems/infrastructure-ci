@@ -2,6 +2,37 @@ name: "Unit Test and Coverage Results"
 
 on:
   workflow_call:
+    inputs:
+      JAVA_VERSION:
+        description: 'The Version of Java to use when compiling'
+        default: '21'
+        required: false
+        type: string
+      JACOCO_VERSION:
+        description: 'The Version of Jacoco Maven plugin to run for code coverage'
+        default: '0.8.12'
+        required: false
+        type: string
+      MAVEN_CLI_OPTS:
+        description: 'The Maven CLI options to use in the build command'
+        default: |
+          --batch-mode \
+          --show-version \
+          --settings /tmp/java_maven_settings.xml
+          -DaltDeploymentRepository=github::https://maven.pkg.github.com/${GITHUB_REPOSITORY}/ \
+          -DaltDeploymentRepository=github::https://maven.pkg.github.com/${GITHUB_REPOSITORY}/ \
+          -DaltDeploymentRepository=github::https://maven.pkg.github.com/${GITHUB_REPOSITORY}/ \
+          -DconnectionUrl=github::${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY} \
+          -DdeveloperConnectionUrl=github::${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}.git
+        required: false
+        type: string
+      MAVEN_TEST_CLI_OPTS:
+          description: 'The build specific Maven CLI options to use in the build command'
+          default: |
+            -Ddocker.skip=true \
+            -Dgpg.skip=true
+          required: false
+          type: string
     secrets:
       SCM_USER:
         required: true
@@ -16,17 +47,6 @@ permissions:
   packages: read
   pull-requests: read
 
-env:
-  JAVA_VERSION: 21
-  MAVEN_CLI_OPTS: |
-    --batch-mode \
-    --settings /tmp/java_maven_settings.xml \
-  MAVEN_TEST_CLI_OPTS: |
-    -Ddocker.skip=true \
-    -Dgpg.skip=true \ 
-    -DskipITs=true
-  JACOCO_VERSION: "0.8.12"
-
 jobs:
   unit-test:
     runs-on: ubuntu-latest
@@ -34,18 +54,18 @@ jobs:
       - name: Check out Source Code
         uses: actions/checkout@v4.2.2
       
-      - name: Set up JDK ${{ env.JAVA_VERSION }}
+      - name: Set up JDK ${{ inputs.JAVA_VERSION }}
         uses: actions/setup-java@v4
         with:
           cache: "maven"
           distribution: "temurin"
-          java-version: ${{ env.JAVA_VERSION }}
+          java-version: ${{ inputs.JAVA_VERSION }}
 
       - name: Retrieve Maven Settings File
         run: wget https://raw.githubusercontent.com/PallasSystems/infrastructure-ci/main/.github/workflows/java_maven_settings.xml -P /tmp/
 
       - name: Jacoco Coverage
-        run: mvn org.jacoco:jacoco-maven-plugin:${{ env.JACOCO_VERSION }}:prepare-agent test org.jacoco:jacoco-maven-plugin:${{ env.JACOCO_VERSION }}:report ${{ env.MAVEN_TEST_CLI_OPTS }} ${{ env.MAVEN_CLI_OPTS }}
+        run: mvn org.jacoco:jacoco-maven-plugin:${{ inputs.JACOCO_VERSION }}:prepare-agent test org.jacoco:jacoco-maven-plugin:${{ inputs.JACOCO_VERSION }}:report ${{ inputs.MAVEN_TEST_CLI_OPTS }} ${{ inputs.MAVEN_CLI_OPTS }}
         env:
           GITHUB_USER: ${{ secrets.SCM_USER }}
           GITHUB_TOKEN: ${{ secrets.SCM_TOKEN }}
