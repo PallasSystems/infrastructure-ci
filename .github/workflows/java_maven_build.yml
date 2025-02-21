@@ -1,0 +1,49 @@
+name: Build Verification of Maven project
+
+on:
+  workflow_call:
+    secrets:
+      SCM_USER:
+        required: true
+      SCM_TOKEN:
+        required: true
+
+permissions:
+  contents: read
+  actions: read
+  checks: write
+  issues: read
+  packages: read
+  pull-requests: read
+
+env:
+  JAVA_VERSION: 21
+  MAVEN_CLI_OPTS: |-
+    --batch-mode 
+    --show-version
+    --settings /tmp/java_maven_settings.xml
+    -Ddocker.skip=true
+    -Dgpg.skip=true
+    
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Source Code
+        uses: actions/checkout@v4.2.2
+
+      - name: Set up JDK ${JAVA_VERSION}
+        uses: actions/setup-java@v4
+        with:
+          cache: "maven"
+          distribution: "temurin"
+          java-version: ${JAVA_VERSION}
+
+      - name: Retrieve Maven Settings File
+        run: wget https://raw.githubusercontent.com/PallasSystems/infrastructure-ci/main/.github/workflows/java_maven_settings.xml -P /tmp/
+
+      - name: Build with Maven
+        run: mvn clean install -DskipTests=true $MAVEN_CLI_OPTS
+        env:
+          GITHUB_USER: ${{ secrets.SCM_USER }}
+          GITHUB_TOKEN: ${{ secrets.SCM_TOKEN }}
