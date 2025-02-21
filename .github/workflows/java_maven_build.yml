@@ -1,4 +1,4 @@
-name: Build Verification of Maven project
+name: Build of Maven project
 
 on:
   workflow_call:
