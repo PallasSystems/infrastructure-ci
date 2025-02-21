@@ -43,7 +43,7 @@ jobs:
         run: wget https://raw.githubusercontent.com/PallasSystems/infrastructure-ci/main/.github/workflows/java_maven_settings.xml -P /tmp/
 
       - name: Jacoco Coverage
-        run: mvn org.jacoco:jacoco-maven-plugin:$JACOCO_VERSION:prepare-agent test org.jacoco:jacoco-maven-plugin:$JACOCO_VERSION:report
+        run: mvn org.jacoco:jacoco-maven-plugin:${{ env.JACOCO_VERSION }}:prepare-agent test org.jacoco:jacoco-maven-plugin:${{ env.JACOCO_VERSION }}:report
         env:
           GITHUB_USER: ${{ secrets.SCM_USER }}
           GITHUB_TOKEN: ${{ secrets.SCM_TOKEN }}
