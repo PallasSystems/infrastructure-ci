@@ -64,7 +64,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.SCM_TOKEN }}
 
       - name: Build with Maven
-        run: mvn install --settings /tmp/java_maven_settings.xml ${{ inputs.MAVEN_BUILD_CLI_OPTS }}
+        run: mvn install ${{ inputs.MAVEN_BUILD_CLI_OPTS }}
         env:
           GITHUB_USER: ${{ secrets.SCM_USER }}
           GITHUB_TOKEN: ${{ secrets.SCM_TOKEN }}
+          MAVEN_CLI_OPTS: ${{ inputs.MAVEN_CLI_OPTS }}
