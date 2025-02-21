@@ -57,5 +57,5 @@ jobs:
         env:
           GITHUB_USER: ${{ secrets.SCM_USER }}
           GITHUB_TOKEN: ${{ secrets.SCM_TOKEN }}
-          MAVEN_CLI_OPTS: ${{ inputs.MAVEN_CLI_OPTS }}
+          MAVEN_ARGS: ${{ inputs.MAVEN_CLI_OPTS }}
           MAVEN_OPTS: ${{ inputs.MAVEN_OPTS }}
