@@ -13,7 +13,6 @@ on:
         default: |-
           --batch-mode \
           --show-version \
-          --settings /tmp/java_maven_settings.xml
         required: false
         type: string
       MAVEN_BUILD_CLI_OPTS:
@@ -57,14 +56,9 @@ jobs:
 
       - name: Retrieve Maven Settings File
         run: wget https://raw.githubusercontent.com/PallasSystems/infrastructure-ci/main/.github/workflows/java_maven_settings.xml -P /tmp/
-      - name: Clean with Maven
-        run: mvn clean --settings /tmp/java_maven_settings.xml ${{ inputs.MAVEN_BUILD_CLI_OPTS }}
-        env:
-          GITHUB_USER: ${{ secrets.SCM_USER }}
-          GITHUB_TOKEN: ${{ secrets.SCM_TOKEN }}
-
+      
       - name: Build with Maven
-        run: mvn install ${{ inputs.MAVEN_BUILD_CLI_OPTS }}
+        run: mvn install --settings /tmp/java_maven_settings.xml ${{ inputs.MAVEN_BUILD_CLI_OPTS }}
         env:
           GITHUB_USER: ${{ secrets.SCM_USER }}
           GITHUB_TOKEN: ${{ secrets.SCM_TOKEN }}
