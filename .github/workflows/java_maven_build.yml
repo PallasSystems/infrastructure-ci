@@ -56,7 +56,8 @@ jobs:
         run: wget https://raw.githubusercontent.com/PallasSystems/infrastructure-ci/main/.github/workflows/java_maven_settings.xml -P /tmp/
 
       - name: Build with Maven
-        run: mvn clean install ${{ inputs.MAVEN_BUILD_CLI_OPTS }} ${{ inputs.MAVEN_CLI_OPTS }}
+        run: mvn clean install ${{ inputs.MAVEN_BUILD_CLI_OPTS }}
         env:
           GITHUB_USER: ${{ secrets.SCM_USER }}
           GITHUB_TOKEN: ${{ secrets.SCM_TOKEN }}
+          MAVEN_CLI_OPTS: ${{ inputs.MAVEN_CLI_OPTS }}
