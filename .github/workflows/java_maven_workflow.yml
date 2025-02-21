@@ -15,18 +15,12 @@ on:
         type: string
       MAVEN_CLI_OPTS:
         description: 'The Maven CLI options to use in the build command'
-        default: |-
-          --batch-mode \
-          --show-version \
-          --settings /tmp/java_maven_settings.xml
+        default: --batch-mode --show-version --settings /tmp/java_maven_settings.xml
         required: false
         type: string
       MAVEN_BUILD_OPTS:
         description: 'The build specific Maven CLI options to use in the build command'
-        default: |-
-          -Ddocker.skip=true \
-          -Dgpg.skip=true \
-          -DskipTests=true
+        default: -Ddocker.skip=true -Dgpg.skip=true -DskipTests=true
         required: false
         type: string
       MAVEN_IT_CLI_OPTS:
