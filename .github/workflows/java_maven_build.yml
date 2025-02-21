@@ -51,6 +51,9 @@ jobs:
           cache: "maven"
           distribution: "temurin"
           java-version: ${{ inputs.JAVA_VERSION }}
+          server-id: github
+          server-username: ${{ secrets.SCM_USER }}
+          server-password: ${{ secrets.SCM_TOKEN }}
 
       - name: Retrieve Maven Settings File
         run: wget https://raw.githubusercontent.com/PallasSystems/infrastructure-ci/main/.github/workflows/java_maven_settings.xml -P /tmp/
@@ -60,4 +63,3 @@ jobs:
         env:
           GITHUB_USER: ${{ secrets.SCM_USER }}
           GITHUB_TOKEN: ${{ secrets.SCM_TOKEN }}
-          MAVEN_CLI_OPTS: ${{ inputs.MAVEN_CLI_OPTS }}
