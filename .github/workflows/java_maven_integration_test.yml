@@ -13,24 +13,14 @@ on:
         default: '0.8.12'
         required: false
         type: string
-      MAVEN_CLI_OPTS:
+      MAVEN_ARGS:
         description: 'The Maven CLI options to use in the build command'
-        default: |
-          --batch-mode \
-          --show-version \
-          --settings /tmp/java_maven_settings.xml
-          -DaltDeploymentRepository=github::https://maven.pkg.github.com/${GITHUB_REPOSITORY}/ \
-          -DaltDeploymentRepository=github::https://maven.pkg.github.com/${GITHUB_REPOSITORY}/ \
-          -DaltDeploymentRepository=github::https://maven.pkg.github.com/${GITHUB_REPOSITORY}/ \
-          -DconnectionUrl=github::${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY} \
-          -DdeveloperConnectionUrl=github::${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}.git
+        default: --batch-mode --show-version --settings /tmp/java_maven_settings.xml
         required: false
         type: string
-      MAVEN_IT_CLI_OPTS:
+      MAVEN_OPTS:
           description: 'The build specific Maven CLI options to use in the build command'
-          default: |
-            -Ddocker.skip=true \
-            -Dgpg.skip=true
+          default: -Ddocker.skip=true -Dgpg.skip=true
           required: false
           type: string
     secrets:
@@ -65,10 +55,12 @@ jobs:
         run: wget https://raw.githubusercontent.com/PallasSystems/infrastructure-ci/main/.github/workflows/java_maven_settings.xml -P /tmp/
 
       - name: Jacoco Coverage
-        run: mvn org.jacoco:jacoco-maven-plugin:${{ inputs.JACOCO_VERSION }}:prepare-agent-integration integration-test org.jacoco:jacoco-maven-plugin:${{ inputs.JACOCO_VERSION }}:report-integration ${{ inputs.MAVEN_IT_CLI_OPTS }}${{ inputs.MAVEN_CLI_OPTS }}
+        run: mvn org.jacoco:jacoco-maven-plugin:${{ inputs.JACOCO_VERSION }}:prepare-agent-integration integration-test org.jacoco:jacoco-maven-plugin:${{ inputs.JACOCO_VERSION }}:report-integration
         env:
           GITHUB_USER: ${{ secrets.SCM_USER }}
           GITHUB_TOKEN: ${{ secrets.SCM_TOKEN }}
+          MAVEN_ARGS: ${{ inputs.MAVEN_ARGS }}
+          MAVEN_OPTS: ${{ inputs.MAVEN_OPTS }}  
 
       - name: Add Jacoco Coverage to PR
         id: jacoco

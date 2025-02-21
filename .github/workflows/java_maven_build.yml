@@ -8,7 +8,7 @@ on:
         default: '21'
         required: false
         type: string
-      MAVEN_CLI_OPTS:
+      MAVEN_ARGS:
         description: 'The Maven CLI options to use in the build command'
         default: --batch-mode --show-version --settings /tmp/java_maven_settings.xml
         required: false
@@ -57,5 +57,5 @@ jobs:
         env:
           GITHUB_USER: ${{ secrets.SCM_USER }}
           GITHUB_TOKEN: ${{ secrets.SCM_TOKEN }}
-          MAVEN_ARGS: ${{ inputs.MAVEN_CLI_OPTS }}
+          MAVEN_ARGS: ${{ inputs.MAVEN_ARGS }}
           MAVEN_OPTS: ${{ inputs.MAVEN_OPTS }}

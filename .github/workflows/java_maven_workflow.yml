@@ -13,7 +13,7 @@ on:
         default: '0.8.12'
         required: false
         type: string
-      MAVEN_CLI_OPTS:
+      MAVEN_ARGS:
         description: 'The Maven CLI options to use in the build command'
         default: --batch-mode --show-version --settings /tmp/java_maven_settings.xml
         required: false
@@ -23,18 +23,14 @@ on:
         default: -Ddocker.skip=true -Dgpg.skip=true -DskipTests=true
         required: false
         type: string
-      MAVEN_IT_CLI_OPTS:
+      MAVEN_IT_OPTS:
         description: 'The build specific Maven CLI options to use in the build command'
-        default: |-
-          -Ddocker.skip=true \
-          -Dgpg.skip=true
+        default: -Ddocker.skip=true -Dgpg.skip=true
         required: false
         type: string
-      MAVEN_TEST_CLI_OPTS:
+      MAVEN_TEST_OPTS:
         description: 'The build specific Maven CLI options to use in the build command'
-        default: |-
-          -Ddocker.skip=true \
-          -Dgpg.skip=true
+        default: -DskipITs=true -Ddocker.skip=true -Dgpg.skip=true
         required: false
         type: string
     secrets:
@@ -61,7 +57,7 @@ jobs:
     secrets: inherit
     with:
       JAVA_VERSION: ${{ inputs.JAVA_VERSION }}
-      MAVEN_CLI_OPTS: ${{ inputs.MAVEN_CLI_OPTS }}
+      MAVEN_ARGS: ${{ inputs.MAVEN_ARGS }}
       MAVEN_OPTS: ${{ inputs.MAVEN_BUILD_OPTS }}
   
   call-workflow-integration-tests:
@@ -70,8 +66,8 @@ jobs:
     with:
       JAVA_VERSION: ${{ inputs.JAVA_VERSION }}
       JACOCO_VERSION: ${{ inputs.JACOCO_VERSION }}
-      MAVEN_CLI_OPTS: ${{ inputs.MAVEN_CLI_OPTS }}
-      MAVEN_IT_CLI_OPTS: ${{ inputs.MAVEN_IT_CLI_OPTS }}
+      MAVEN_ARGS: ${{ inputs.MAVEN_ARGS }}
+      MAVEN_OPTS: ${{ inputs.MAVEN_IT_OPTS }}
 
   call-workflow-unit-tests:
     uses: PallasSystems/infrastructure-ci/.github/workflows/java_maven_unit_test.yml@main
@@ -79,5 +75,5 @@ jobs:
     with:
       JAVA_VERSION: ${{ inputs.JAVA_VERSION }}
       JACOCO_VERSION: ${{ inputs.JACOCO_VERSION }}
-      MAVEN_CLI_OPTS: ${{ inputs.MAVEN_CLI_OPTS }}
-      MAVEN_TEST_CLI_OPTS: ${{ inputs.MAVEN_TEST_CLI_OPTS }}
+      MAVEN_ARGS: ${{ inputs.MAVEN_ARGS }}
+      MAVEN_OPTS: ${{ inputs.MAVEN_TEST_OPTS }}
