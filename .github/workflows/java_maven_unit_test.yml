@@ -18,11 +18,11 @@ permissions:
 
 env:
   JAVA_VERSION: 21
-  MAVEN_CLI_OPTS: |-
-    --batch-mode 
-    --settings /tmp/java_maven_settings.xml
-    -Ddocker.skip=true
-    -Dgpg.skip=true
+  MAVEN_CLI_OPTS: |
+    --batch-mode \
+    --settings /tmp/java_maven_settings.xml \
+    -Ddocker.skip=true \
+    -Dgpg.skip=true 
   JACOCO_VERSION: "0.8.12"
 
 jobs:
