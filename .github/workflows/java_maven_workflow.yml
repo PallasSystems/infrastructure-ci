@@ -11,8 +11,6 @@ on:
         required: true
       SCM_TOKEN:
         required: true
-      SONAR_TOKEN:
-        required: true
 
 permissions:
   contents: read
