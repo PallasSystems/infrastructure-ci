@@ -32,12 +32,12 @@ jobs:
       - name: Check out Source Code
         uses: actions/checkout@v4.2.2
       
-      - name: Set up JDK ${env.JAVA_VERSION}
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
         uses: actions/setup-java@v4
         with:
           cache: "maven"
           distribution: "temurin"
-          java-version: ${env.JAVA_VERSION}
+          java-version: ${{ env.JAVA_VERSION }}
 
       - name: Retrieve Maven Settings File
         run: wget https://raw.githubusercontent.com/PallasSystems/infrastructure-ci/main/.github/workflows/java_maven_settings.xml -P /tmp/
