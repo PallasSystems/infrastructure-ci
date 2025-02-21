@@ -48,7 +48,7 @@ permissions:
   pull-requests: read
 
 jobs:
-  unit-test:
+  integration-test:
     runs-on: ubuntu-latest
     steps:
       - name: Check out Source Code
