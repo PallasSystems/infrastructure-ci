@@ -77,3 +77,7 @@ jobs:
       JACOCO_VERSION: ${{ inputs.JACOCO_VERSION }}
       MAVEN_ARGS: ${{ inputs.MAVEN_ARGS }}
       MAVEN_OPTS: ${{ inputs.MAVEN_TEST_OPTS }}
+
+  call-workflow-pmd:
+    uses: PallasSystems/infrastructure-ci/.github/workflows/java_maven_pmd.yml@main
+    secrets: inherit
