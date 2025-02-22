@@ -70,7 +70,6 @@ jobs:
         if: github.event_name == 'pull_request'
         with:
           path: "**/pmd.xml"
-          token: ${{ secrets.SCM_TOKEN }}
 
       - name: Upload PMD Artifacts
         uses: actions/upload-artifact@v4
