@@ -74,6 +74,6 @@ jobs:
       - name: Upload Checkstyle Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: pmd-report-xml
+          name: checkstyle-reports
           path: ${{ github.workspace }}/**/target/**/checkstyle*.*
           retention-days: 30
