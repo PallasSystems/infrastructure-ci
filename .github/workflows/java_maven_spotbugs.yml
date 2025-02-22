@@ -8,9 +8,9 @@ on:
         default: '21'
         required: false
         type: string
-      PMD_VERSION:
-        description: 'The Version of Maven PMD plugin to run for SAST'
-        default: '3.26.0'
+      SPOTBUGS_VERSION:
+        description: 'The Version of Maven Spotbugs plugin to run for SAST'
+        default: '4.9.1.0'
         required: false
         type: string
       MAVEN_ARGS:
@@ -20,7 +20,7 @@ on:
         type: string
       MAVEN_OPTS:
         description: 'The build specific Maven CLI options to use in the build command'
-        default: -Dformat=txt -DminimumPriority=100 -Ddocker.skip=true -Dgpg.skip=true
+        default: -Dspotbugs.htmlOutput=true -Dspotbugs.xmlOutput=true -Dspotbugs.effort=Max -Dspotbugs.failOnError=false -Dspotbugs.threshold=Low -Ddocker.skip=true -Dgpg.skip=true
         required: false
         type: string
     secrets:
@@ -38,7 +38,7 @@ permissions:
   pull-requests: read
 
 jobs:
-  pmd-sast:
+  spotbugs-sast:
     runs-on: ubuntu-latest
     steps:
       - name: Check out Source Code
@@ -57,24 +57,26 @@ jobs:
       - name: Retrieve Maven Settings File
         run: wget https://raw.githubusercontent.com/PallasSystems/infrastructure-ci/main/.github/workflows/java_maven_settings.xml -P /tmp/
 
-      - name: Run PMD
-        run: mvn org.apache.maven.plugins:maven-pmd-plugin:${{ inputs.PMD_VERSION }}:aggregate-pmd
+      - name: Run Spotbugs
+        run: |
+          mvn verify -DskipTests=true
+          mvn com.github.spotbugs:spotbugs-maven-plugin:${{ inputs.SPOTBUGS_VERSION }}:spotbugs
         env:
           GITHUB_USER: ${{ secrets.SCM_USER }}
           GITHUB_TOKEN: ${{ secrets.SCM_TOKEN }}
           MAVEN_ARGS: ${{ inputs.MAVEN_ARGS }}
           MAVEN_OPTS: ${{ inputs.MAVEN_OPTS }} 
 
-      - name: PMD Annotation
+      - name: Spotbugs Annotation
         uses: jwgmeligmeyling/pmd-github-action@v1.2
         if: github.event_name == 'pull_request'
         with:
-          path: "**/pmd.xml"
+          path: "**/spotbugsXml.xml"
           token: ${{ secrets.SCM_TOKEN }}
 
-      - name: Upload PMD Artifacts
+      - name: Upload Spotbugs Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: pmd-report-xml
-          path: ${{ github.workspace }}/**/target/**/pmd.*
+          path: ${{ github.workspace }}/**/target/**/spotbugs*.xml
           retention-days: 30

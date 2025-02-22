@@ -8,9 +8,9 @@ on:
         default: '21'
         required: false
         type: string
-      PMD_VERSION:
-        description: 'The Version of Maven PMD plugin to run for SAST'
-        default: '3.26.0'
+      CHECKSTYLE_VERSION:
+        description: 'The Version of Maven Checkstyle plugin to run for SAST'
+        default: '3.6.0'
         required: false
         type: string
       MAVEN_ARGS:
@@ -20,7 +20,7 @@ on:
         type: string
       MAVEN_OPTS:
         description: 'The build specific Maven CLI options to use in the build command'
-        default: -Dformat=txt -DminimumPriority=100 -Ddocker.skip=true -Dgpg.skip=true
+        default: -Ddocker.skip=true -Dgpg.skip=true
         required: false
         type: string
     secrets:
@@ -33,12 +33,11 @@ permissions:
   contents: read
   actions: read
   checks: write
-  issues: read
   packages: read
   pull-requests: read
 
 jobs:
-  pmd-sast:
+  checkstyle-sast:
     runs-on: ubuntu-latest
     steps:
       - name: Check out Source Code
@@ -57,24 +56,24 @@ jobs:
       - name: Retrieve Maven Settings File
         run: wget https://raw.githubusercontent.com/PallasSystems/infrastructure-ci/main/.github/workflows/java_maven_settings.xml -P /tmp/
 
-      - name: Run PMD
-        run: mvn org.apache.maven.plugins:maven-pmd-plugin:${{ inputs.PMD_VERSION }}:aggregate-pmd
+      - name: Run Checkstyle
+        run: mvn org.apache.maven.plugins:maven-checkstyle-plugin:${{ inputs.CHECKSTYLE_VERSION }}:checkstyle-aggregate
         env:
           GITHUB_USER: ${{ secrets.SCM_USER }}
           GITHUB_TOKEN: ${{ secrets.SCM_TOKEN }}
           MAVEN_ARGS: ${{ inputs.MAVEN_ARGS }}
           MAVEN_OPTS: ${{ inputs.MAVEN_OPTS }} 
 
-      - name: PMD Annotation
-        uses: jwgmeligmeyling/pmd-github-action@v1.2
+      - name: Checkstyle Annotation
+        uses: jwgmeligmeyling/checkstyle-github-action@v1.2
         if: github.event_name == 'pull_request'
         with:
-          path: "**/pmd.xml"
+          path: "**/checkstyle-result.xml"
           token: ${{ secrets.SCM_TOKEN }}
 
-      - name: Upload PMD Artifacts
+      - name: Upload Checkstyle Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: pmd-report-xml
-          path: ${{ github.workspace }}/**/target/**/pmd.*
+          path: ${{ github.workspace }}/**/target/**/checkstyle*.*
           retention-days: 30

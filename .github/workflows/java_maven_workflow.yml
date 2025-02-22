@@ -8,9 +8,24 @@ on:
         default: '21'
         required: false
         type: string
+      CHECKSTYLE_VERSION:
+        description: 'The Version of Maven Checkstyle plugin to run for SAST'
+        default: '3.6.0'
+        required: false
+        type: string
       JACOCO_VERSION:
         description: 'The Version of Jacoco Maven plugin to run for code coverage'
         default: '0.8.12'
+        required: false
+        type: string
+      PMD_VERSION:
+        description: 'The Version of Maven PMD plugin to run for SAST'
+        default: '3.26.0'
+        required: false
+        type: string
+      SPOTBUGS_VERSION:
+        description: 'The Version of Maven Spotbugs plugin to run for SAST'
+        default: '4.9.1.0'
         required: false
         type: string
       MAVEN_ARGS:
@@ -23,6 +38,11 @@ on:
         default: -Ddocker.skip=true -Dgpg.skip=true -DskipTests=true
         required: false
         type: string
+      MAVEN_CHECKSTYLE_OPTS:
+        description: 'The build specific Maven CLI options to use in the build command'
+        default: -Ddocker.skip=true -Dgpg.skip=true
+        required: false
+        type: string
       MAVEN_IT_OPTS:
         description: 'The build specific Maven CLI options to use in the build command'
         default: -Ddocker.skip=true -Dgpg.skip=true
@@ -31,6 +51,16 @@ on:
       MAVEN_TEST_OPTS:
         description: 'The build specific Maven CLI options to use in the build command'
         default: -DskipITs=true -Ddocker.skip=true -Dgpg.skip=true
+        required: false
+        type: string
+      MAVEN_PMD_OPTS:
+        description: 'The build specific Maven CLI options to use in the build command'
+        default: -Dformat=txt -DminimumPriority=100 -Ddocker.skip=true -Dgpg.skip=true
+        required: false
+        type: string
+      MAVEN_SPOTBUGS_OPTS:
+        description: 'The build specific Maven CLI options to use in the build command'
+        default: -Dspotbugs.htmlOutput=true -Dspotbugs.xmlOutput=true -Dspotbugs.effort=Max -Dspotbugs.failOnError=false -Dspotbugs.threshold=Low -Ddocker.skip=true -Dgpg.skip=true
         required: false
         type: string
     secrets:
@@ -78,6 +108,29 @@ jobs:
       MAVEN_ARGS: ${{ inputs.MAVEN_ARGS }}
       MAVEN_OPTS: ${{ inputs.MAVEN_TEST_OPTS }}
 
+  call-workflow-checkstyle:
+    uses: PallasSystems/infrastructure-ci/.github/workflows/java_maven_checkstyle.yml@main
+    secrets: inherit
+    with:
+      JAVA_VERSION: ${{ inputs.JAVA_VERSION }}
+      CHECKSTYLE_VERSION: ${{ inputs.CHECKSTYLE_VERSION }}
+      MAVEN_ARGS: ${{ inputs.MAVEN_ARGS }}
+      MAVEN_OPTS: ${{ inputs.MAVEN_CHECKSTYLE_OPTS }}
+
   call-workflow-pmd:
     uses: PallasSystems/infrastructure-ci/.github/workflows/java_maven_pmd.yml@main
     secrets: inherit
+    with:
+      JAVA_VERSION: ${{ inputs.JAVA_VERSION }}
+      PMD_VERSION: ${{ inputs.PMD_VERSION }}
+      MAVEN_ARGS: ${{ inputs.MAVEN_ARGS }}
+      MAVEN_OPTS: ${{ inputs.MAVEN_PMD_OPTS }}
+
+  call-workflow-spotbugs:
+    uses: PallasSystems/infrastructure-ci/.github/workflows/java_maven_spotbugs.yml@main
+    secrets: inherit
+    with:
+      JAVA_VERSION: ${{ inputs.JAVA_VERSION }}
+      SPOTBUGS_VERSION: ${{ inputs.SPOTBUGS_VERSION }}
+      MAVEN_ARGS: ${{ inputs.MAVEN_ARGS }}
+      MAVEN_OPTS: ${{ inputs.MAVEN_SPOTBUGS_OPTS }}
