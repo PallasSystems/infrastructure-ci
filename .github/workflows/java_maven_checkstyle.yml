@@ -69,7 +69,6 @@ jobs:
         if: github.event_name == 'pull_request'
         with:
           path: "**/checkstyle-result.xml"
-          token: ${{ secrets.SCM_TOKEN }}
 
       - name: Upload Checkstyle Artifacts
         uses: actions/upload-artifact@v4
