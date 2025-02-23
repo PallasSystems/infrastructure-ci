@@ -35,7 +35,7 @@ permissions:
   checks: write
   issues: read
   packages: read
-  pull-requests: read
+  pull-requests: write
 
 jobs:
   unit-test:
@@ -76,7 +76,9 @@ jobs:
         uses: mikepenz/action-junit-report@v5
         if: github.event_name == 'pull_request'
         with:
+          check_name: 'Unit Test Report'
           comment: true
+          include_passed: true
           fail_on_failure: true
           report_paths: '**/target/**/TEST-*.xml'
 
@@ -84,7 +86,9 @@ jobs:
         uses: mikepenz/action-junit-report@v5
         if: github.event_name != 'pull_request'
         with:
+            check_name: 'Unit Test Report'
             comment: false
+            include_passed: true
             fail_on_failure: false
             report_paths: '**/target/**/TEST-*.xml'          
 
