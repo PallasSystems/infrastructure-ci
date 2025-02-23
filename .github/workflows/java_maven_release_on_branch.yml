@@ -92,7 +92,7 @@ jobs:
           GPG_KEY_ID: ${{ secrets.GPG_PRIVATE_KEYNAME }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
           MAVEN_ARGS: ${{ inputs.MAVEN_ARGS }}
-          MAVEN_OPTS: ${{ inputs.MAVEN_OPTS }} 
+          MAVEN_OPTS: ${{ inputs.MAVEN_PREPARE_OPTS }} 
 
       - name: Release with Maven
         if: ${{ contains(github.ref, 'refs/heads/release') }}
@@ -103,7 +103,7 @@ jobs:
           GPG_KEY_ID: ${{ secrets.GPG_PRIVATE_KEYNAME }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
           MAVEN_ARGS: ${{ inputs.MAVEN_ARGS }}
-          MAVEN_OPTS: ${{ inputs.MAVEN_OPTS }} 
+          MAVEN_OPTS: ${{ inputs.MAVEN_PERFORM_OPTS }} 
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Create pull request into main
