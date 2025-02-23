@@ -34,7 +34,7 @@ permissions:
   actions: read
   checks: write
   packages: read
-  pull-requests: read
+  pull-requests: write
 
 jobs:
   checkstyle-sast:

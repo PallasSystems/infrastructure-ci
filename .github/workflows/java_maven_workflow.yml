@@ -79,7 +79,7 @@ permissions:
   checks: write
   issues: read
   packages: read
-  pull-requests: read
+  pull-requests: write
 
 jobs:
   call-workflow-build:
