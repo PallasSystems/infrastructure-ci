@@ -68,7 +68,7 @@ jobs:
           MAVEN_OPTS: ${{ inputs.MAVEN_OPTS }} 
 
       - name: Spotbugs Annotation
-        uses: jwgmeligmeyling/pmd-github-action@v1.2
+        uses: jwgmeligmeyling/spotbugs-github-action@v1.2
         if: github.event_name == 'pull_request'
         with:
           path: "**/spotbugsXml.xml"
