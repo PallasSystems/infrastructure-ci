@@ -80,7 +80,7 @@ jobs:
           comment: true
           include_passed: true
           fail_on_failure: true
-          report_paths: '**/target/**/TEST-*.xml'
+          report_paths: '**/target/surefire-reports/TEST-*.xml'
 
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v5
@@ -90,7 +90,7 @@ jobs:
             comment: false
             include_passed: true
             fail_on_failure: false
-            report_paths: '**/target/**/TEST-*.xml'          
+            report_paths: '**/target/surefire-reports/TEST-*.xml'          
 
       - name: Upload Jacoco Coverage Artifacts
         uses: actions/upload-artifact@v4

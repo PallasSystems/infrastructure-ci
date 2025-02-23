@@ -59,7 +59,7 @@ jobs:
 
       - name: Run Spotbugs
         run: |
-          mvn verify -DskipTests=true
+          mvn install -DskipTests=true
           mvn com.github.spotbugs:spotbugs-maven-plugin:${{ inputs.SPOTBUGS_VERSION }}:spotbugs
         env:
           GITHUB_USER: ${{ secrets.SCM_USER }}
