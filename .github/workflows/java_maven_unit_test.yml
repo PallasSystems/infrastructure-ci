@@ -64,7 +64,7 @@ jobs:
 
       - name: Add Jacoco Coverage to PR
         id: jacoco
-        uses: madrapps/jacoco-report@v1.7.1
+        uses: madrapps/jacoco-report@v1.7.2
         if: github.event_name == 'pull_request'
         with:
           paths: ${{ github.workspace }}/**/target/**/jacoco.xml
