@@ -57,7 +57,7 @@ jobs:
         run: npm run test --if-present -- --coverage --passWithNoTests
 
       - name: Test Report
-        uses: dorny/test-reporter@v1.9.1
+        uses: dorny/test-reporter@v2.1.1
         if: success() || failure() # run this step even if previous step failed
         with:
           name: JEST Tests # Name of the check run which will be created
