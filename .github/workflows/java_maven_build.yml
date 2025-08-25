@@ -40,7 +40,7 @@ jobs:
         uses: actions/checkout@v4.2.2
 
       - name: Set up JDK ${{ inputs.JAVA_VERSION }}
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           cache: "maven"
           distribution: "temurin"
